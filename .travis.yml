@@ -1,0 +1,52 @@
+language: python
+
+env:
+  # Default values for common packages, override as needed
+  global:
+    - COVERAGE=true
+
+matrix:
+  fast_finish: true
+  include:
+  - python: 2.7
+    env:
+    - PYTHON=2.6
+    - PANDAS=0.15
+  - python: 2.7
+    env:
+    - PYTHON=2.7
+  - python: 2.7
+    env:
+    - PYTHON=3.3
+  - python: 2.7
+    env:
+    - PYTHON=3.4
+
+# Setup anaconda
+before_install:
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda/bin:$PATH
+  - sudo apt-get install pandoc
+  - conda update --yes --quiet conda
+  # Build package list to avoid empty package=versions; only needed for versioned pacakges
+  - PKGS="python=${PYTHON}"
+  - PKGS="${PKGS} pandas"; if [ ${PANDAS} ]; then PKGS="${PKGS}=${PANDAS}"; fi
+
+# Install packages
+install:
+  - conda create --yes --quiet -n pandas-stash-test ${PKGS} ${OPTIONAL} nose pip setuptools pytables
+  - source activate pandas-stash-test
+  - if [ ${COVERAGE} = true ]; then pip install coverage coveralls nose-cov; fi
+  - if [ ${PYTHON} = 2.6 ]; then pip install unittest2; fi
+  - python setup.py build
+
+script:
+  - SRCDIR=$PWD
+  - python setup.py install
+  - python -c 'import pandas as pd; pd.show_versions();'
+  - if [ ${COVERAGE} = true ]; then nosetests --with-cov --cov-config ${SRCDIR}/.travis_coveragerc --cov-report html; else nosetests; fi
+
+after_success:
+  - if [ ${COVERAGE} = true ]; then coveralls --rcfile=${SRCDIR}/.travis_coveragerc; fi
