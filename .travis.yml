@@ -1,5 +1,7 @@
 language: python
 
+sudo: false
+
 env:
   # Default values for common packages, override as needed
   global:
@@ -28,7 +30,6 @@ before_install:
   - chmod +x miniconda.sh
   - ./miniconda.sh -b
   - export PATH=/home/travis/miniconda/bin:$PATH
-  - sudo apt-get install pandoc
   - conda update --yes --quiet conda
   # Build package list to avoid empty package=versions; only needed for versioned pacakges
   - PKGS="python=${PYTHON}"
