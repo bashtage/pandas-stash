@@ -1,5 +1,5 @@
 from collections import defaultdict
-import inspect
+from inspect import currentframe
 import warnings
 from fnmatch import filter
 
@@ -13,7 +13,8 @@ from .vault import Vault
 
 DEFAULT_PATH = 'workspace.h5'
 PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel, pd.Panel4D)
-PANDAS_NUMPY_MAP = dict([(i + 1, pd_type) for i, pd_type in enumerate(PANDAS_TYPES)])
+PANDAS_NUMPY_MAP = dict([(i + 1, pd_type)
+                         for i, pd_type in enumerate(PANDAS_TYPES)])
 SCALAR_TYPES_LIST = tuple(SCALAR_TYPES)
 NUMPY_DTYPES = {np.bool: 'bool',
                 np.int8: 'int8',
@@ -48,16 +49,19 @@ unsupported_value_doc = """
 and so cannot be saved.
 """
 
+
 def _is_string_type(dtype):
     try:
         return dtype.type in (np.str, np.str_)
     except:
         return False
 
+
 def _print_detailed_info(header, variables):
     print(header)
     print('-' * 20)
-    if not any([len(variables[key]) > 0 for key in ('pandas', 'numpy', 'builtin')]):
+    cts = [len(variables[key]) > 0 for key in ('pandas', 'numpy', 'builtin')]
+    if not any(cts):
         print('None')
         return
     for key in ('pandas', 'numpy', 'builtin'):
@@ -118,10 +122,13 @@ class Saver(object):
     Includes are processed before excludes, so values that match both will be
     included.
     """
-    def __init__(self, path=None, pandas=True, scalars=True, numpy=True, frame=None,
-                 private=False, include=None, exclude=None, verbose=True, **kwargs):
+
+    def __init__(self, path=None, pandas=True, scalars=True, numpy=True,
+                 frame=None, private=False, include=None, exclude=None,
+                 verbose=True, **kwargs):
         self._path = 'workspace.h5' if path is None else path
-        self._frame = inspect.currentframe().f_back.f_globals if frame is None else frame
+        _globals = currentframe().f_back.f_globals
+        self._frame = _globals if frame is None else frame
         if not issubclass(type(self._frame), dict):
             raise TypeError('frame must be dict-like if provided.')
         self._pandas = pandas
@@ -174,10 +181,12 @@ class Saver(object):
             for incl in self._include:
                 if incl.find('*') >= 0:
                     wildcard_matches.extend(filter(candidates, incl))
-            candidates = [candidate for candidate in candidates if candidate in self._include]
+            candidates = [candidate for candidate in candidates
+                          if candidate in self._include]
             candidates = set(candidates + wildcard_matches)
         elif self._exclude is not None:
-            excluded = [candidate for candidate in candidates if candidate in self._exclude]
+            excluded = [candidate for candidate in candidates
+                        if candidate in self._exclude]
             for excl in self._exclude:
                 if excl.find('*') >= 0:
                     wildcard_matches.extend(filter(candidates, excl))
@@ -194,10 +203,11 @@ class Saver(object):
                 scalars.append(candidate)
             elif isinstance(obj, np.ndarray):
                 dtype = getattr(obj, 'dtype', None)
-                if (dtype in NUMPY_DTYPES_LIST or _is_string_type(dtype))\
+                if (dtype in NUMPY_DTYPES_LIST or _is_string_type(dtype)) \
                         and obj.ndim in (1, 2, 3, 4):
                     numpy.append(candidate)
-                elif dtype in NUMPY_DTYPES_LIST and obj.ndim not in (1, 2, 3, 4):
+                elif (dtype in NUMPY_DTYPES_LIST and
+                        obj.ndim not in (1, 2, 3, 4)):
                     warnings.warn(unsupported_dimension_doc.format(obj.ndim),
                                   UnsupportedDimensionWarning)
 
@@ -227,11 +237,14 @@ class Saver(object):
         values = defaultdict(dict)
         store = self._store
         for key in self._scalar_vars:
-            if type(frame[key]) in (int, long) and frame[key] > np.iinfo(np.int64).max:
-                warnings.warn(unsupported_value_doc.format(key), UnsupportedValueWarning)
+            if (type(frame[key]) in (int, long) and
+                    frame[key] > np.iinfo(np.int64).max):
+                warnings.warn(unsupported_value_doc.format(key),
+                              UnsupportedValueWarning)
                 continue
             values[type(frame[key])][key] = frame[key]
-            self._variables['builtin'][SCALAR_TYPES[type(frame[key])]].append(key)
+            _type = SCALAR_TYPES[type(frame[key])]
+            self._variables['builtin'][_type].append(key)
 
         warnings.simplefilter('ignore', NaturalNameWarning)
         for key in values:
@@ -273,15 +286,18 @@ class Loader(object):
         Flag indicating whether to display information about variables loaded
 
     """
-    def __init__(self, path=None, insert=True, frame=None, overwrite=False, verbose=True):
+
+    def __init__(self, path=None, insert=True, frame=None, overwrite=False,
+                 verbose=True):
         self._path = DEFAULT_PATH if path is None else path
-        self._frame = inspect.currentframe().f_back.f_globals if frame is None else frame
+        _globals = currentframe().f_back.f_globals
+        self._frame = _globals if frame is None else frame
         self._insert = insert
         self._overwrite = overwrite
         self._vault = Vault()
         self._verbose = verbose
-        self._variables = self._variables = dict([(key, defaultdict(list))
-                                                  for key in ('pandas', 'numpy', 'builtin')])
+        self._variables = dict([(key, defaultdict(list))
+                                for key in ('pandas', 'numpy', 'builtin')])
 
     def _load_pandas(self, key, item):
         variable_name = key.split(':')[-1]
