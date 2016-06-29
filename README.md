@@ -1,5 +1,6 @@
 [![CI Status](https://travis-ci.org/bashtage/pandas-stash.svg?branch=master)](https://travis-ci.org/bashtage/pandas-stash)
 [![Coverage Status](https://coveralls.io/repos/bashtage/pandas-stash/badge.svg?branch=master)](https://coveralls.io/r/bashtage/pandas-stash?branch=master)
+[![Code Health](https://landscape.io/github/bashtage/pandas-stash/master/landscape.svg?style=flat)](https://landscape.io/github/bashtage/pandas-stash/master)
 
 # pandas-stash
 A utility to save and load entire workspaces containing pandas objects, numpy 

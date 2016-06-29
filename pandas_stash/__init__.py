@@ -3,8 +3,8 @@ import inspect
 from .io import Saver, Loader
 
 
-def stash(path=None, pandas=True, scalars=True, numpy=True, frame=None, private=False,
-          include=None, exclude=None, verbose=True, **kwargs):
+def stash(path=None, pandas=True, scalars=True, numpy=True, frame=None,
+          private=False, include=None, exclude=None, verbose=True, **kwargs):
     """
     Save the contents of your workspace -- pandas, numpy or scalars
 
@@ -45,9 +45,10 @@ def stash(path=None, pandas=True, scalars=True, numpy=True, frame=None, private=
     included.
     """
     if frame is None:
-        frame = inspect.currentframe().f_back.f_globals if frame is None else frame
-    saver = Saver(path, pandas, scalars, numpy, frame, private, include, exclude, verbose,
-                  **kwargs)
+        _globals = inspect.currentframe().f_back.f_globals
+        frame = _globals if frame is None else frame
+    saver = Saver(path, pandas, scalars, numpy, frame, private, include,
+                  exclude, verbose, **kwargs)
     saver.open()
     saver.write()
     saver.close()
@@ -78,6 +79,7 @@ def unstash(path=None, insert=True, frame=None, overwrite=False, verbose=True):
 
     """
     if frame is None:
-        frame = inspect.currentframe().f_back.f_globals if frame is None else frame
+        _globals = inspect.currentframe().f_back.f_globals
+        frame = _globals if frame is None else frame
     loader = Loader(path, insert, frame, overwrite, verbose)
     return loader.load()

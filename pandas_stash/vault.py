@@ -32,8 +32,8 @@ class Vault(dict):
 
     def __setattr__(self, key, value):
         if key in RESERVED:
-            raise AttributeError('{0} is a reserved attribute.  This key can only be set using '
-                                 'dictionary syntax.')
+            raise AttributeError('{0} is a reserved attribute.  This key can '
+                                 'only be set using dictionary syntax.')
         self[key] = value
 
     @property
@@ -46,8 +46,8 @@ class Vault(dict):
     def __getattribute__(self, item):
         if item in RESERVED and item in self:
             from warnings import warn
-            warn('{0} is a reserved attribute but is also in this vault. Reserved '
-                 'attributed can only be accessed using dictionary '
+            warn('{0} is a reserved attribute but is also in this vault. '
+                 'Reserved attributed can only be accessed using dictionary '
                  'syntax.'.format(item), ReservedWordWarning)
 
         return object.__getattribute__(self, item)
