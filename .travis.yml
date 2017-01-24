@@ -37,23 +37,25 @@ before_install:
   - export PATH=/home/travis/miniconda/bin:$PATH
   - export PATH=/home/travis/miniconda2/bin:$PATH
   - conda update --yes --quiet conda
-  # Build package list to avoid empty package=versions; only needed for versioned pacakges
+  # Build package list to avoid empty package=versions; only needed for versioned packages
   - PKGS="python=${PYTHON}"
   - PKGS="${PKGS} pandas"; if [ ${PANDAS} ]; then PKGS="${PKGS}=${PANDAS}"; fi
 
 # Install packages
 install:
-  - conda create --yes --quiet -n pandas-stash-test ${PKGS} ${OPTIONAL} nose pip setuptools pytables flake8
+  - conda create --yes --quiet -n pandas-stash-test ${PKGS} ${OPTIONAL} pytables
   - source activate pandas-stash-test
-  - if [ ${COVERAGE} = true ]; then pip install coverage coveralls nose-cov; fi
+  - pip install flake8 coverage pytest coveralls pytest-cov codecov pytest-xdist
   - python setup.py build
 
 script:
   - SRCDIR=$PWD
   - python setup.py install
   - python -c 'import pandas as pd; pd.show_versions();'
-  - if [ ${COVERAGE} = true ]; then nosetests --with-cov --cov-config ${SRCDIR}/.travis_coveragerc; else nosetests; fi
+  - py.test -n 2 -s --cov=pandas_stash --pyargs pandas_stash
   - flake8 pandas_stash --exclude=*test*,*\doc\*,setup.py
 
 after_success:
   - if [ ${COVERAGE} = true ]; then coveralls --rcfile=${SRCDIR}/.travis_coveragerc; fi
+  - if [ ${COVERAGE} = true ]; then codecov; fi
+
