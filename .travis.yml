@@ -25,6 +25,9 @@ matrix:
   - python: 2.7
     env:
     - PYTHON=3.5
+  - python: 2.7
+    env:
+    - PYTHON=3.6
 
 # Setup anaconda
 before_install:
