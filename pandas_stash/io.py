@@ -53,7 +53,7 @@ and so cannot be saved.
 def _is_string_type(dtype):
     try:
         return dtype.type in (np.str, np.str_)
-    except:
+    except AttributeError:
         return False
 
 
