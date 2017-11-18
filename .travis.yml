@@ -51,11 +51,10 @@ install:
 script:
   - SRCDIR=$PWD
   - python setup.py install
-  - python -c 'import pandas as pd; pd.show_versions();'
+  - python -c "import pandas as pd; pd.show_versions();"
   - py.test -n 2 -s --cov=pandas_stash --pyargs pandas_stash
   - flake8 pandas_stash --exclude=*test*,*\doc\*,setup.py
 
 after_success:
   - if [ ${COVERAGE} = true ]; then coveralls --rcfile=${SRCDIR}/.travis_coveragerc; fi
   - if [ ${COVERAGE} = true ]; then codecov; fi
-
