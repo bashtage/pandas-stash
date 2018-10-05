@@ -13,21 +13,22 @@ matrix:
   - python: 2.7
     env:
     - PYTHON=2.7
-    - PANDAS=0.15
+    - PANDAS=0.19
   - python: 2.7
     env:
     - PYTHON=2.7
-    - PANDAS=0.17
-  - python: 2.7
-    env:
-    - PYTHON=3.4
-    - PANDAS=0.16
+    - PANDAS=0.21
   - python: 2.7
     env:
     - PYTHON=3.5
+    - PANDAS=0.22
   - python: 2.7
     env:
     - PYTHON=3.6
+    - PANDAS=0.23
+  - python: 2.7
+    env:
+    - PYTHON=3.7
 
 # Setup anaconda
 before_install:

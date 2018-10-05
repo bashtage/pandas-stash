@@ -46,13 +46,3 @@ def iterkeys(obj, **kwargs):
     if not func:
         func = obj.keys
     return func(**kwargs)
-
-
-try:
-    from unittest import skipIf
-except ImportError:
-    from unittest2 import skipIf
-
-
-def skip_if(cond, msg=''):
-    return skipIf(cond, msg)

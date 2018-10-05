@@ -31,8 +31,6 @@ Currently will store pandas objects:
 
 * Series
 * DataFrame
-* Panel
-* Panel4D
 
 Numpy arrays with dimensions 1, 2, 3 and 4 with dtypes:
 

@@ -13,8 +13,7 @@ def stash(path=None, pandas=True, scalars=True, numpy=True, frame=None,
     path: str, optional
         Full path of file to save.  If omitted uses ./workspace.h5
     pandas: bool, optional
-        Flag indicating to include pandas objects (Series, DataFrame,
-        Panel, Panel4D)
+        Flag indicating to include pandas objects (Series, DataFrame)
     scalars: bool, optional
         Flag indicating whether to save scalars (float, int, string)
     numpy: bool, optional
@@ -24,13 +23,14 @@ def stash(path=None, pandas=True, scalars=True, numpy=True, frame=None,
         Dictionary-like structure that supports key-based access (e.g.
         globals()).  Uses the frame of the calling namespace if not given.
     private: bool, optional
-        Flag indicating whether to include variables starting with _
+        Flag indicating whether to include variables starting with
+        underscore (``_``)
     include: iterable of str, optional
         Iterable containing variables names to store or wildcard patterns to
-        match (e.g. ap*le or *pple)
+        match (e.g. ``ap*le`` or ``*pple``)
     exclude: iterable of str, optional
         Iterable containing variables names to exclude from the store or
-        wildcard patterns to match (e.g. ap*le or *pple)
+        wildcard patterns to match (e.g. ``ap*le`` or ``*pple``)
     verbose: bool, optional
         Flag indicating whether to display information about variables stored.
     kwargs: optional
