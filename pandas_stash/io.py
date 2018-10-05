@@ -12,7 +12,7 @@ from .compat import SCALAR_TYPES, long, u
 from .vault import Vault
 
 DEFAULT_PATH = 'workspace.h5'
-PANDAS_TYPES = (pd.Series, pd.DataFrame, pd.Panel, pd.Panel4D)
+PANDAS_TYPES = (pd.Series, pd.DataFrame)
 PANDAS_NUMPY_MAP = dict([(i + 1, pd_type)
                          for i, pd_type in enumerate(PANDAS_TYPES)])
 SCALAR_TYPES_LIST = tuple(SCALAR_TYPES)
@@ -91,8 +91,7 @@ class Saver(object):
     path: str, optional
         Full path of file to save.  If omitted uses ./workspace.h5
     pandas: bool, optional
-        Flag indicating to include pandas objects (Series, DataFrame,
-        Panel, Panel4D)
+        Flag indicating to include pandas objects (Series, DataFrame)
     scalars: bool, optional
         Flag indicating whether to save scalars (float, int, string)
     numpy: bool, optional
@@ -102,13 +101,14 @@ class Saver(object):
         Dictionary-like structure that supports key-based access (e.g.
         globals()).  Uses the frame of the calling namespace if not given.
     private: bool, optional
-        Flag indicating whether to include variables starting with _
+        Flag indicating whether to include variables starting with
+        underscore (``_``)
     include: iterable of str, optional
         Iterable containing variables names to store or wildcard patterns to
-        match (e.g. ap*le or *pple)
+        match (e.g. ``ap*le`` or ``*pple``)
     exclude: iterable of str, optional
         Iterable containing variables names to exclude from the store or
-        wildcard patterns to match (e.g. ap*le or *pple)
+        wildcard patterns to match (e.g. ``ap*le`` or ``*pple``)
     verbose: bool, optional
         Flag indicating whether to display information about variables stored.
     kwargs: optional

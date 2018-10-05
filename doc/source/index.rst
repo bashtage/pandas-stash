@@ -7,7 +7,7 @@ pandas-stash
 ------------
 pandas-stash provide a simple method to save complete workspaces including:
 
-    * pandas objects: Series, DataFrame, Panel and Panel4D
+    * pandas objects: Series and DataFrame
     * numpy arrays: dimensions 1 to 4
     * built-in scalar types (int, str, float)
 
